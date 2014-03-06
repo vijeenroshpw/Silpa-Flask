@@ -1,11 +1,14 @@
 from flask import Flask
+from flask.ext import  restful
 from logging import handlers, Formatter
 from webbridge import WebBridge
 from core.modulehelper import enabled_modules, BASEURL, modules
+from core.resthandler import RestHandler   #rest handler
 from jinja2 import PackageLoader, ChoiceLoader
 import loadconfig
 import logging
 import os
+
 
 
 def register_url():
@@ -98,12 +101,18 @@ DEBUG = False
 # Basics
 app = Flask(__name__)
 app.config.from_object(__name__)
+api = restful.Api(app)
 
+# Configures the RESTapi
+api.add_resource(RestHandler,'/api/v1/<string:module>/<string:method>/')
 # Logging
 configure_logging()
 
 # Register URL's
 register_url()
+
+
+
 
 # adds templates from imported modules
 add_templates()
